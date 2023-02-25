@@ -10,9 +10,29 @@ from .serializers import EventSerializer,SegmentSerializer
 def getRoutes(request):
     data = [
         {
-        'Endpoint':'/api/',
+        'Endpoint':'/api/v1',
         'Methods': 'GET',
         'Details':'Gets all routes'
+        },
+        {
+        'Endpoint':'http://127.0.0.1:8000/api/v1/events',
+        'Methods': 'GET',
+        'Details':'Gets all the events'
+        },
+        {
+        'Endpoint':'http://127.0.0.1:8000/api/v1/events/3',
+        'Methods': 'GET',
+        'Details':'Gets one event'
+        },
+        {
+        'Endpoint':'http://127.0.0.1:8000/api/v1/segments',
+        'Methods': 'GET',
+        'Details':'Gets all the segments'
+        },
+        {
+        'Endpoint':'http://127.0.0.1:8000/api/v1/segments/3',
+        'Methods': 'GET',
+        'Details':'Gets one segment'
         },
     ]
     return Response(data)
@@ -22,4 +42,25 @@ def all_events(request):
     if request.method == 'GET':
         events = Event.objects.all()
         serializer = EventSerializer(events,many=True)
+        return Response(serializer.data)
+
+@api_view(['GET'])
+def get_one_event(request,pk):
+    if request.method == 'GET':
+        event = Event.objects.get(pk=pk)
+        serializer = EventSerializer(event,many=False)
+        return Response(serializer.data)
+    
+@api_view(['GET'])
+def get_all_segments(request):
+        if request.method == 'GET':
+            segments = Segment.objects.all()
+            serializer = SegmentSerializer(segments,many=True)
+            return Response(serializer.data)
+        
+@api_view(['GET'])
+def get_one_segment(request,pk):
+    if request.method == 'GET':
+        segment = Segment.objects.get(pk=pk)
+        serializer = SegmentSerializer(segment,many=False)
         return Response(serializer.data)
